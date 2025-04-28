@@ -5,3 +5,6 @@
 [submodule "vendor/ImGuiFileDialog"]
 	path = vendor/ImGuiFileDialog
 	url = https://github.com/Anythingsoup01/ImGuiFileDialog.git
+[submodule "vendor/prebuild"]
+	path = vendor/prebuild
+	url = https://github.com/Anythingsoup01/Prebuild.git
