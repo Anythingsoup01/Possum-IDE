@@ -2,3 +2,6 @@
 	path = Ferret
 	url = https://github.com/Anythingsoup01/Ferret.git
 
+[submodule "vendor/ImGuiFileDialog"]
+	path = vendor/ImGuiFileDialog
+	url = https://github.com/Anythingsoup01/ImGuiFileDialog.git

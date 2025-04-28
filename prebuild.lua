@@ -1,6 +1,5 @@
-workspace("FerretAppTemplate")
-    architecture("x64")
+workspace "FerretAppTemplate"
 
 external "Ferret"
-external "FerretApp"
+external "Possum"
 external "vendor/prebuild"
