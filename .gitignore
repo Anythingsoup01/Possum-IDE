@@ -2,4 +2,4 @@
 build
 prebuild
 
-.clang
+.cache
