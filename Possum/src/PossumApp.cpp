@@ -17,6 +17,15 @@ Ferret::Application* Ferret::CreateApplication(int argc, char** argv)
     {
         if (ImGui::BeginMenu("File"))
         {
+            if (ImGui::MenuItem("Open File", "Ctrl + Shift + O"))
+            {
+                possumLayer->Get().OpenFile();
+            }
+            if (ImGui::MenuItem("Save File", "Ctrl + S"))
+            {
+                possumLayer->Get().SaveFile();
+            }
+
             if (ImGui::MenuItem("Exit"))
             {
                 app->Close();

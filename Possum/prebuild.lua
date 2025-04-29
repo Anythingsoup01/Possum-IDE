@@ -18,9 +18,11 @@ project "Possum"
         "$(WORKSPACEDIR)/Ferret/vendor/spdlog/include",
         "$(WORKSPACEDIR)/Ferret/vendor/glm",
         "$(WORKSPACEDIR)/Ferret/vendor/imgui",
+        "$(WORKSPACEDIR)/vendor/ImGuiFileDialog",
     }
 
     links
     {
         "Ferret",
+        "ImGuiFileDialog",
     }

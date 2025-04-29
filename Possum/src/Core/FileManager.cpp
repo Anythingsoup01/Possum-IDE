@@ -1,0 +1,69 @@
+#include "FileManager.h"
+#include <filesystem>
+#include <fstream>
+
+namespace Ferret::Possum
+{
+    std::string ReadFStream(const std::ifstream& in)
+    {
+        std::stringstream ss;
+        ss << in.rdbuf();
+        std::string str = ss.str();
+        return str;
+    }
+
+    
+    void FileManager::OpenFile(const std::filesystem::path& filePath)
+    {
+        std::ifstream in(filePath);
+        if (!in.is_open())
+        {
+            FE_CLI_CRITICAL("Failed to open file!");
+            return;
+        }
+        
+        std::string defaultFileName = filePath.filename().string();
+
+        FileData fileData;
+        fileData.Title = defaultFileName;
+        fileData.AltTitle = defaultFileName; // TODO : Have this captcher the directory before as well
+        fileData.IsUntitled = false;
+        fileData.IsOpen = true;
+        
+        std::string inData = ReadFStream(in);
+        fileData.Buffer.copy(inData.data());
+        fileData.Content = inData;
+
+        InsertFileData(filePath, fileData);
+    }
+
+    void FileManager::SaveFile(const std::filesystem::path& filePath, const char* outData)
+    {
+
+    }
+
+    void FileManager::InsertFileData(const std::filesystem::path& key, const FileData fileData)
+    {
+        m_Files.emplace(std::pair<std::filesystem::path, FileData>(key, fileData));
+    }
+
+    void FileManager::RemoveFileData(const std::filesystem::path& key)
+    {
+        m_Files.erase(key);
+    }
+
+    FileData& FileManager::GetFileData(const std::filesystem::path& key)
+    {
+        return m_Files.at(key);
+    }
+
+    bool FileManager::Exists(const std::filesystem::path& key)
+    {
+        for (auto& [storedKey, data] : m_Files)
+        {
+            if (key == storedKey)
+                return true;
+        }
+        return false;
+    }
+}

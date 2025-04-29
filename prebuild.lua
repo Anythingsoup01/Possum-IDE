@@ -2,4 +2,4 @@ workspace "FerretAppTemplate"
 
 external "Ferret"
 external "Possum"
-external "vendor/prebuild"
+external "vendor/ImGuiFileDialog"

@@ -1,6 +1,9 @@
 set(SRCS
+    src/Core/FileManager.cpp
     src/PossumLayer.cpp
     src/PossumApp.cpp
+    src/Core/Buffer.h
+    src/Core/FileManager.h
     src/PossumLayer.h
 )
 add_executable(Possum ${SRCS})
@@ -14,9 +17,11 @@ target_include_directories(Possum PRIVATE
     ${CMAKE_SOURCE_DIR}/Ferret/vendor/spdlog/include
     ${CMAKE_SOURCE_DIR}/Ferret/vendor/glm
     ${CMAKE_SOURCE_DIR}/Ferret/vendor/imgui
+    ${CMAKE_SOURCE_DIR}/vendor/ImGuiFileDialog
 )
 
 target_link_libraries(Possum
     Ferret
+    ImGuiFileDialog
 )
 
