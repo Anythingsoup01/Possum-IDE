@@ -9,7 +9,6 @@ namespace Ferret::Possum
     {
     private:
         char* m_Data;
-        size_t m_Size;
         size_t m_Capacity;
     public:
         // Defaults to one as initial capacity
@@ -21,7 +20,6 @@ namespace Ferret::Possum
                 free(m_Data);
                 throw std::runtime_error("Failed to malloc data");
             }
-            m_Size = 0;
             m_Capacity = initialCapacity;
         }
 
@@ -40,13 +38,12 @@ namespace Ferret::Possum
         void copy(const char* inData)
         {
             size_t len = strlen(inData);
-            if (m_Size + len >= m_Capacity)
+            if (len >= m_Capacity)
             {
-                size_t newCapacity = (m_Size + len) * 2;
+                size_t newCapacity =  len * 2;
                 resize(newCapacity);
             }
             strcpy(m_Data, inData);
-            m_Size += len;
         }
 
         void set(size_t index, char character)
@@ -68,8 +65,6 @@ namespace Ferret::Possum
         // Getters
 
         char* data() { return m_Data; }
-
-        size_t& size() { return m_Size; }
 
         size_t& capacity() { return m_Capacity; }
 

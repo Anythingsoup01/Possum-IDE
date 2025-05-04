@@ -16,8 +16,7 @@ namespace Ferret::Possum
 
         bool IsUntitled = false;
         bool IsOpen = false;
-
-        std::string Content; // TODO: Maybe delete this, buffer already provides us with the string data!
+    
         CBuffer Buffer;
 
         ImGuiTabItemFlags TabFlags = ImGuiTabItemFlags_None;
@@ -30,6 +29,7 @@ namespace Ferret::Possum
         void OpenFile(const std::filesystem::path& filePath);
         void SaveFile(const std::filesystem::path& filePath, const char* outData);
 
+        void UpdateFileData(const std::filesystem::path& key, const std::string& title, const std::string& altTitle, const std::string& fileString, const std::filesystem::path& newKey);
         void InsertFileData(const std::filesystem::path& key, const FileData fileData);
         void RemoveFileData(const std::filesystem::path& key);
 

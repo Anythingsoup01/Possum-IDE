@@ -97,7 +97,12 @@ namespace Ferret::Possum
                 if (ctrl)
                 {
                     if (shift)
-                        OpenFile();
+                    {
+                        
+                    }
+                    else {
+                       OpenFile();
+                    }
                 }
                 break;
             }
@@ -242,6 +247,10 @@ namespace Ferret::Possum
                         actualFilePath.append(m_FileNameBuffer.data());
 
                         m_FileManager.SaveFile(actualFilePath, m_CurrentFileString.c_str());
+
+                        std::stringstream key;
+
+                        m_FileManager.UpdateFileData(m_CurrentFilePath, m_FileNameBuffer.data(), m_FileNameBuffer.data(), m_CurrentFileString, actualFilePath);
 
                         m_FileInteractionType = FileInteractionType::None;
                     }

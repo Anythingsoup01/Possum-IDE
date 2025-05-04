@@ -1,7 +1,7 @@
 #include "FileManager.h"
 #include <filesystem>
 #include <fstream>
-
+#include "Ferret/Core/Application.h"
 
 namespace Ferret::Possum
 {
@@ -61,7 +61,6 @@ namespace Ferret::Possum
         
         std::string inData = ReadFStream(in);
         fileData.Buffer.copy(inData.data());
-        fileData.Content = inData;
 
         InsertFileData(filePath, fileData);
     }
@@ -74,6 +73,22 @@ namespace Ferret::Possum
             FE_CLI_ERROR("Saving file to {}", filePath.string());
         }
         out << outData;
+    }
+
+    void FileManager::UpdateFileData(const std::filesystem::path& key, const std::string& title, const std::string& altTitle, const std::string& fileString, const std::filesystem::path& newKey)
+    {
+        Application::Get().SetMenubarCallback([this, key](){
+            RemoveFileData(key);
+        });
+        FileData fileData;
+        fileData.Title = title;
+        fileData.AltTitle = altTitle;
+        fileData.IsUntitled = false;
+        fileData.IsOpen = true;
+        fileData.TabFlags = ImGuiTabItemFlags_SetSelected;
+        fileData.Buffer.copy(fileString.c_str());
+
+        InsertFileData(newKey, fileData);
     }
 
     void FileManager::InsertFileData(const std::filesystem::path& key, const FileData fileData)
