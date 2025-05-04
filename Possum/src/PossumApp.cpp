@@ -1,7 +1,9 @@
 #include "Ferret/Core/Application.h"
 #include "Ferret/Core/Entrypoint.h"
 #include "PossumLayer.h"
+
 #include "imgui.h"
+#include "imgui_internal.h"
 
 using namespace Ferret::Possum;
 PossumLayer* possumLayer = new PossumLayer;
@@ -12,6 +14,7 @@ Ferret::Application* Ferret::CreateApplication(int argc, char** argv)
     spec.Title = "Possum IDE";
 
     Ferret::Application* app = new Ferret::Application(spec);
+    app->SetDockspaceFlags(ImGuiDockNodeFlags_NoTabBar);
     app->PushLayer(possumLayer);
     app->SetMenubarCallback([app]()
     {

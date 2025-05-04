@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 
+
 namespace Ferret::Possum
 {
     std::string ReadFStream(const std::ifstream& in)
@@ -39,7 +40,12 @@ namespace Ferret::Possum
 
     void FileManager::SaveFile(const std::filesystem::path& filePath, const char* outData)
     {
-
+        std::ofstream out(filePath);
+        if (!out.is_open())
+        {
+            FE_CLI_ERROR("File doesn't exist! Saving to new file");
+        }
+        out << outData;
     }
 
     void FileManager::InsertFileData(const std::filesystem::path& key, const FileData fileData)

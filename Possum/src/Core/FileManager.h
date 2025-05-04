@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <filesystem>
 #include <imgui.h>
 
@@ -34,7 +35,7 @@ namespace Ferret::Possum
         FileData& GetFileData(const std::filesystem::path& key);
         bool Exists(const std::filesystem::path& key);
 
-        std::unordered_map<std::filesystem::path, FileData> GetFiles() const { return m_Files; }
+        std::unordered_map<std::filesystem::path, FileData>& GetFiles() { return m_Files; }
     private:
         std::unordered_map<std::filesystem::path, FileData> m_Files;
     };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ferret/Core/Application.h"
+
 #include "Ferret/Layer/Layer.h"
 #include "Ferret/Event/Event.h"
 #include "Ferret/Event/KeyEvent.h"
@@ -23,17 +25,23 @@ namespace Ferret::Possum
         void SaveFile();
 
     private:
-
+        
+        bool OnKeyPressed(KeyPressedEvent& e);
         void RenderFileDialog();
         void RenderWorkspace();
         void RenderFileTree();
 
         void RenderOpenFile();
-        void RenderSaveFile();
+        void RenderSaveFileAs();
 
     private:
         static PossumLayer* s_Instance;
         FileManager m_FileManager;
+
+        std::string m_CurrentFileString;
+        std::filesystem::path m_CurrentFilePath;
+
+        char* m_FileNameBuffer;
 
     private:
         // Would like to limit the booleans for file open, save, ect.
