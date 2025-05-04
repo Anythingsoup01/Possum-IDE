@@ -91,6 +91,7 @@ namespace Ferret::Possum
             {
                 if (ctrl)
                     NewFile();
+                break;
             }
             case KeyCode::O:
             {
@@ -98,7 +99,7 @@ namespace Ferret::Possum
                 {
                     if (shift)
                     {
-                        
+
                     }
                     else {
                        OpenFile();
@@ -125,13 +126,12 @@ namespace Ferret::Possum
         ImGuiWindowFlags windowFlags;
         ImGui::Begin("##WORKSPACE", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         {
-            
             ImGuiTabBarFlags tabBarFlags = ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_FittingPolicyScroll;
             ImGui::BeginTabBar("##WORKSPACETABBAR", tabBarFlags);
             {
+                ImVec2 size = ImGui::GetContentRegionAvail();
                 for (auto&& [filePath, data] : m_FileManager.GetFiles())
                 {
-                    ImVec2 size = ImGui::GetContentRegionAvail();
                     if (ImGui::BeginTabItem(data.Title.c_str(), &data.IsOpen, data.TabFlags))
                     {
                     ImGuiCommands::InputTextMultiline("##TEXTFIELD", data.Buffer, data.Buffer.capacity(), size, ImGuiInputTextFlags_AllowTabInput);

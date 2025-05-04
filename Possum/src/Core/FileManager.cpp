@@ -13,6 +13,17 @@ namespace Ferret::Possum
         return str;
     }
 
+    FileManager::~FileManager()
+    {
+        for (int i = 0; i <= m_UntitledDocuments; i++)
+        {
+            std::stringstream ss;
+            ss << "/tmp/possum/UntitledDocument" << i;
+            std::remove(ss.str().c_str());
+        }
+
+    }
+
     void FileManager::NewFile()
     {
         std::stringstream filePath;

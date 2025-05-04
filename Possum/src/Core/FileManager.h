@@ -25,6 +25,8 @@ namespace Ferret::Possum
     class FileManager
     {
     public:
+        ~FileManager();
+
         void NewFile();
         void OpenFile(const std::filesystem::path& filePath);
         void SaveFile(const std::filesystem::path& filePath, const char* outData);

@@ -8,6 +8,8 @@
 
 #include "Core/FileManager.h"
 
+#include "ImGuiFileDialog.h"
+
 namespace Ferret::Possum
 {
     class PossumLayer : public Layer
@@ -48,6 +50,7 @@ namespace Ferret::Possum
         CBuffer m_FileNameBuffer;
         CBuffer m_FileDirectoryBuffer;
 
+        ImGuiFileDialog m_OpenFileDialog;
 
     private:
         // Would like to limit the booleans for file open, save, ect.
