@@ -21,8 +21,10 @@ namespace Ferret::Possum
 
         static PossumLayer& Get() { return *s_Instance; }
 
+        void NewFile();
         void OpenFile();
         void SaveFile();
+
 
     private:
         
@@ -32,7 +34,8 @@ namespace Ferret::Possum
         void RenderFileTree();
 
         void RenderOpenFile();
-        void RenderSaveFileAs();
+        void RenderSaveFileAs(); 
+
 
     private:
         static PossumLayer* s_Instance;
@@ -40,8 +43,11 @@ namespace Ferret::Possum
 
         std::string m_CurrentFileString;
         std::filesystem::path m_CurrentFilePath;
+        std::string m_CurrentFileName;
 
-        char* m_FileNameBuffer;
+        CBuffer m_FileNameBuffer;
+        CBuffer m_FileDirectoryBuffer;
+
 
     private:
         // Would like to limit the booleans for file open, save, ect.

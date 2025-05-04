@@ -13,6 +13,34 @@ namespace Ferret::Possum
         return str;
     }
 
+    void FileManager::NewFile()
+    {
+        std::stringstream filePath;
+        filePath << "/tmp/possum/";
+        std::stringstream fileName;
+        fileName << "UntitledDocument" << m_UntitledDocuments;
+        
+        if (!std::filesystem::exists(filePath.str()))
+            std::filesystem::create_directories(filePath.str());
+        std::stringstream ss;
+        ss << filePath.str() << fileName.str();
+        std::ofstream out(ss.str());
+        if (!out.is_open())
+        {
+            FE_CLI_ERROR("Failed to create new file!");
+            return;
+        }
+
+        FileData fileData;
+        fileData.Title = fileName.str();
+        fileData.IsUntitled = true;
+        fileData.IsOpen = true;
+        fileData.Buffer.copy("\0\0\0\0\0\0\0\0\0\0");
+
+        InsertFileData(ss.str(), fileData);
+
+        m_UntitledDocuments++;
+    }
     
     void FileManager::OpenFile(const std::filesystem::path& filePath)
     {
@@ -43,7 +71,7 @@ namespace Ferret::Possum
         std::ofstream out(filePath);
         if (!out.is_open())
         {
-            FE_CLI_ERROR("File doesn't exist! Saving to new file");
+            FE_CLI_ERROR("Saving file to {}", filePath.string());
         }
         out << outData;
     }

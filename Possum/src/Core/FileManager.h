@@ -26,6 +26,7 @@ namespace Ferret::Possum
     class FileManager
     {
     public:
+        void NewFile();
         void OpenFile(const std::filesystem::path& filePath);
         void SaveFile(const std::filesystem::path& filePath, const char* outData);
 
@@ -38,5 +39,7 @@ namespace Ferret::Possum
         std::unordered_map<std::filesystem::path, FileData>& GetFiles() { return m_Files; }
     private:
         std::unordered_map<std::filesystem::path, FileData> m_Files;
+
+        int m_UntitledDocuments = 0;
     };
 }

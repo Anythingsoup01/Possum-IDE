@@ -1,8 +1,10 @@
 set(SRCS
     src/Core/FileManager.cpp
+    src/Core/ImGuiCommands.cpp
     src/PossumLayer.cpp
     src/PossumApp.cpp
     src/Core/Buffer.h
+    src/Core/ImGuiCommands.h
     src/Core/FileManager.h
     src/PossumLayer.h
 )

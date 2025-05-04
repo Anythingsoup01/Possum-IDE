@@ -2,7 +2,9 @@
 #include "Ferret.h"
 #include "ImGuiFileDialog.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 
+#include "Core/ImGuiCommands.h"
 
 namespace Ferret::Possum
 {
@@ -55,6 +57,11 @@ namespace Ferret::Possum
         dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(OnKeyPressed));
     }
 
+    void PossumLayer::NewFile()
+    {
+        m_FileManager.NewFile();
+    }
+
     void PossumLayer::OpenFile()
     {
         m_FileInteraction = true;
@@ -63,8 +70,14 @@ namespace Ferret::Possum
     
     void PossumLayer::SaveFile()
     {
-        if (!m_CurrentFilePath.empty())
+        if (!m_CurrentFilePath.empty() && !m_FileManager.GetFileData(m_CurrentFilePath).IsUntitled)
             m_FileManager.SaveFile(m_CurrentFilePath, m_CurrentFileString.c_str());
+
+        else if (m_FileManager.GetFileData(m_CurrentFilePath).IsUntitled)
+        {
+            m_FileInteractionType = FileInteractionType::Save;
+            m_FileInteraction = true;
+        }
     }
 
     bool PossumLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -74,6 +87,11 @@ namespace Ferret::Possum
 
         switch (e.GetKeyCode())
         {
+            case KeyCode::N:
+            {
+                if (ctrl)
+                    NewFile();
+            }
             case KeyCode::O:
             {
                 if (ctrl)
@@ -100,21 +118,24 @@ namespace Ferret::Possum
     {
         auto& files = m_FileManager.GetFiles();
         ImGuiWindowFlags windowFlags;
-        ImGui::Begin("##WORKSPACE", nullptr);
+        ImGui::Begin("##WORKSPACE", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         {
-            ImVec2 size = ImGui::GetContentRegionAvail();
+            
             ImGuiTabBarFlags tabBarFlags = ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_FittingPolicyScroll;
             ImGui::BeginTabBar("##WORKSPACETABBAR", tabBarFlags);
             {
-                for (auto& [filePath, data] : m_FileManager.GetFiles())
+                for (auto&& [filePath, data] : m_FileManager.GetFiles())
                 {
+                    ImVec2 size = ImGui::GetContentRegionAvail();
                     if (ImGui::BeginTabItem(data.Title.c_str(), &data.IsOpen, data.TabFlags))
                     {
-                        ImGui::InputTextMultiline("##TEXTFIELD", data.Buffer.data(), data.Buffer.size() * 2, size, ImGuiInputTextFlags_AllowTabInput); // TODO: As it sits, the buffer doesn't resize, we really need a way to force a resize
+                    ImGuiCommands::InputTextMultiline("##TEXTFIELD", data.Buffer, data.Buffer.capacity(), size, ImGuiInputTextFlags_AllowTabInput);
                         m_CurrentFileString = data.Buffer.data();
                         m_CurrentFilePath = filePath;
+                        m_CurrentFileName = data.Title;
                         if (data.TabFlags == ImGuiTabItemFlags_SetSelected)
                             data.TabFlags = ImGuiTabItemFlags_None;
+
                         ImGui::EndTabItem();
                     }
                 }
@@ -203,11 +224,34 @@ namespace Ferret::Possum
     {
         ImGui::Begin("##SAVEFILEAS");
         {
-            ImGui::InputText("Save File As", m_FileNameBuffer, 128);
-            if (Ferret::Input::IsKeyPressed(KeyCode::Enter))
-                m_FileManager.SaveFile(m_FileNameBuffer, m_CurrentFileString.c_str());
+            ImGui::BeginTabBar("##SaveFile");
+            {
+                if (ImGui::BeginTabItem("SaveFile"))
+                {
+                    ImGuiCommands::InputText("Save File As", m_FileNameBuffer, 64);
+                    ImGuiCommands::InputText("Directory", m_FileDirectoryBuffer, 256);
+
+                    if (Input::IsKeyPressed(KeyCode::Enter) && m_FileNameBuffer.active() && m_FileDirectoryBuffer.active())
+                    {
+                        int lastCharIndex = strlen(m_FileDirectoryBuffer.data());
+
+                        if (m_FileDirectoryBuffer[lastCharIndex - 1] != '/')
+                            m_FileDirectoryBuffer.set(lastCharIndex, '/');
+
+                        std::string actualFilePath(m_FileDirectoryBuffer.data());
+                        actualFilePath.append(m_FileNameBuffer.data());
+
+                        m_FileManager.SaveFile(actualFilePath, m_CurrentFileString.c_str());
+
+                        m_FileInteractionType = FileInteractionType::None;
+                    }
+            
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
+            }
             ImGui::End();
         }
-        m_FileInteractionType = FileInteractionType::None;
+        
     }
 }

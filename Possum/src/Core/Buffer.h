@@ -13,7 +13,7 @@ namespace Ferret::Possum
         size_t m_Capacity;
     public:
         // Defaults to one as initial capacity
-        CBuffer(size_t initialCapacity = 1)
+        CBuffer(size_t initialCapacity = 10)
         {
             m_Data = (char*)malloc(initialCapacity);
             if (m_Data == nullptr)
@@ -49,6 +49,14 @@ namespace Ferret::Possum
             m_Size += len;
         }
 
+        void set(size_t index, char character)
+        {
+            if (index > m_Capacity)
+                throw std::out_of_range("Index is out of range!");
+
+            m_Data[index] = character;
+        }
+
 
         bool active()
         {
@@ -63,9 +71,11 @@ namespace Ferret::Possum
 
         size_t& size() { return m_Size; }
 
+        size_t& capacity() { return m_Capacity; }
+
         char operator[](size_t index)
         {
-            if (index >= m_Size || index < 0)
+            if (index > m_Capacity || index < 0)
                 throw std::out_of_range("Index is out of range!");
             return m_Data[index];
         }

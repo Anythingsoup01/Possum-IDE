@@ -20,6 +20,10 @@ Ferret::Application* Ferret::CreateApplication(int argc, char** argv)
     {
         if (ImGui::BeginMenu("File"))
         {
+            if (ImGui::MenuItem("New File", "Ctrl + N"))
+            {
+                possumLayer->NewFile();
+            }
             if (ImGui::MenuItem("Open File", "Ctrl + Shift + O"))
             {
                 possumLayer->Get().OpenFile();
