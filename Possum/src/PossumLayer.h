@@ -36,8 +36,17 @@ namespace Ferret::Possum
         void RenderFileTree();
 
         void RenderOpenFile();
-        void RenderSaveFileAs(); 
+        void RenderSaveFileAs();
 
+    private:
+
+        struct FolderData
+        {
+            std::string Title;
+            bool IsDirectory = false;
+        };
+        
+        std::unordered_map<std::filesystem::path, FolderData> m_FolderData;
 
     private:
         static PossumLayer* s_Instance;
