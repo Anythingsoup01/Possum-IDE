@@ -12,9 +12,10 @@ Ferret::Application* Ferret::CreateApplication(int argc, char** argv)
 {
     Ferret::ApplicationSpecifications spec;
     spec.Title = "Possum IDE";
+    spec.DefaultIniLayout = "DefaultLayout.ini";
 
     Ferret::Application* app = new Ferret::Application(spec);
-    app->SetDockspaceFlags(ImGuiDockNodeFlags_NoTabBar);
+    app->SetDockNodeFlags(ImGuiDockNodeFlags_NoTabBar);
     app->PushLayer(possumLayer);
     app->SetMenubarCallback([app]()
     {
