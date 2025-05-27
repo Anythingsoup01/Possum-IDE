@@ -24,6 +24,7 @@ namespace Ferret::Possum
         static PossumLayer& Get() { return *s_Instance; }
 
         void NewFile();
+        void OpenFolder();
         void OpenFile();
         void SaveFile();
 
@@ -36,18 +37,40 @@ namespace Ferret::Possum
         void RenderFileTree();
 
         void RenderOpenFile();
+        void RenderOpenFolder();
         void RenderSaveFileAs();
+
+       
 
     private:
 
+        struct FileData
+        {
+            std::string FileName = "";
+        };
+
         struct FolderData
         {
-            std::string Title;
-            bool IsDirectory = false;
+            std::string FolderName = "";
+            std::map<std::filesystem::path, FileData> Files;
+            std::map<std::filesystem::path, FolderData> SubFolders;
+        };
+
+        struct ProjectData
+        {
+            std::string ProjectName = "";
+            std::filesystem::path ProjectPath = "";
+            std::map<std::filesystem::path, FolderData> Folders;
+            std::map<std::filesystem::path, FileData> Files;
         };
         
-        std::unordered_map<std::filesystem::path, FolderData> m_FolderData;
-
+        void RenderFolderData(const std::map<std::filesystem::path, FolderData>& folderData);
+        void RenderFileData(const std::map<std::filesystem::path, FileData>& fileData);
+        void EmplaceFolderData(std::map<std::filesystem::path, FolderData>& folderData, const std::filesystem::path& folderPath);
+        void EmplaceFileData(std::map<std::filesystem::path, FileData>& fileData, const std::filesystem::path& folderPath);
+        // This is used when opening folders or opening projects
+        ProjectData m_ProjectData;
+        bool m_UsingProjectData = false;
     private:
         static PossumLayer* s_Instance;
         FileManager m_FileManager;
@@ -70,7 +93,8 @@ namespace Ferret::Possum
         {
             None = 0,
             Open = 1,
-            Save = 2,
+            Folder = 2,
+            Save = 3,
         };
         bool m_FileInteraction = false;
         FileInteractionType m_FileInteractionType = FileInteractionType::None;

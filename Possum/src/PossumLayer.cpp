@@ -67,6 +67,12 @@ namespace Ferret::Possum
         m_FileInteraction = true;
         m_FileInteractionType = FileInteractionType::Open;
     }
+
+    void PossumLayer::OpenFolder()
+    {
+        m_FileInteraction = true;
+        m_FileInteractionType = FileInteractionType::Folder;
+    }
     
     void PossumLayer::SaveFile()
     {
@@ -99,10 +105,11 @@ namespace Ferret::Possum
                 {
                     if (shift)
                     {
-
+                        OpenFolder();
                     }
-                    else {
-                       OpenFile();
+                    else 
+                    {
+                        OpenFile();
                     }
                 }
                 break;
@@ -161,11 +168,23 @@ namespace Ferret::Possum
             {
                 if(ImGui::BeginTabItem("File Explorer"))
                 {
-                    for (auto& [filePath, data] : files)
+                    if (!m_UsingProjectData)
                     {
-                        if (ImGui::Button(data.Title.c_str(), size))
+                        for (auto& [filePath, data] : files)
                         {
-                            data.TabFlags = ImGuiTabItemFlags_SetSelected;
+                            if (ImGui::Button(data.Title.c_str(), size))
+                            {
+                                data.TabFlags = ImGuiTabItemFlags_SetSelected;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (ImGui::TreeNodeEx(m_ProjectData.ProjectName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+                        {
+                            RenderFolderData(m_ProjectData.Folders);
+                            RenderFileData(m_ProjectData.Files);
+                            ImGui::TreePop();
                         }
                     }
                     ImGui::EndTabItem();
@@ -176,6 +195,42 @@ namespace Ferret::Possum
         }
     }
 
+    void PossumLayer::RenderFolderData(const std::map<std::filesystem::path, FolderData>& folderData)
+    {
+        for (const auto& [filePath, data] : folderData)
+        {
+            if (ImGui::TreeNodeEx(data.FolderName.c_str()))
+            {
+                if (!data.SubFolders.empty())
+                    RenderFolderData(data.SubFolders);
+
+                RenderFileData(data.Files);
+
+                ImGui::TreePop();
+            }
+        }
+    }
+
+    void PossumLayer::RenderFileData(const std::map<std::filesystem::path, FileData>& fileData)
+    {
+        for (const auto& [filePath, fileData] : fileData)
+        {
+            if (ImGui::TreeNodeEx(fileData.FileName.c_str(), ImGuiTreeNodeFlags_Leaf))
+            {
+                if (ImGui::IsItemClicked())
+                {
+                    if (m_FileManager.Exists(filePath))
+                        m_FileManager.GetFileData(filePath).TabFlags = ImGuiTabItemFlags_SetSelected;
+                    else
+                        m_FileManager.OpenFile(filePath);
+                    }
+                    ImGui::TreePop();
+                }
+
+        }
+
+    }
+
     void PossumLayer::RenderFileDialog()
     {
         switch(m_FileInteractionType)
@@ -183,6 +238,11 @@ namespace Ferret::Possum
             case FileInteractionType::Open:
             {
                 RenderOpenFile();
+                break;
+            }
+            case FileInteractionType::Folder:
+            {
+                RenderOpenFolder();
                 break;
             }
             case FileInteractionType::Save:
@@ -211,7 +271,7 @@ namespace Ferret::Possum
             ImGui::End();
         }
         
-        if (instance->Display("OpenFileDialog", ImGuiWindowFlags_NoCollapse))
+        if (instance->Display("OpenFileDialog"))
         {
             if (instance->IsOk())
             {
@@ -223,6 +283,75 @@ namespace Ferret::Possum
             m_FileInteractionType = FileInteractionType::None;
         }
 
+    }
+
+    void PossumLayer::RenderOpenFolder()
+    {
+        const auto& instance = ImGuiFileDialog::Instance();
+        ImGui::Begin("##OpenFolderDialog");
+        {
+            IGFD::FileDialogConfig config; config.path = "/home/";
+            instance->OpenDialog("OpenFolderDialog", "Choose Directory", nullptr, config);
+            ImGui::End();
+        }
+
+        if (instance->Display("OpenFolderDialog"))
+        {
+            if (instance->IsOk())
+            {
+                std::string filePath = instance->GetCurrentPath();
+                size_t lastSlash = filePath.find_last_of('/') + 1;
+                m_ProjectData = ProjectData();
+                m_ProjectData.ProjectName = filePath.substr(lastSlash);
+                m_ProjectData.ProjectPath = instance->GetCurrentPath();
+                
+                EmplaceFolderData(m_ProjectData.Folders, instance->GetCurrentPath());
+                EmplaceFileData(m_ProjectData.Files, instance->GetCurrentPath());
+            }
+            instance->Close();
+            m_FileInteractionType = FileInteractionType::None;
+
+            if (!m_ProjectData.ProjectName.empty())
+                m_UsingProjectData = true;
+        }
+    }
+
+    void PossumLayer::EmplaceFolderData(std::map<std::filesystem::path, FolderData>& folderData, const std::filesystem::path& folderPath)
+    {
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath))
+        {
+            if (entry.is_directory())
+            {
+                FolderData folder;
+                std::string name = entry.path().string();
+                size_t lastSlash = name.find_last_of('/') + 1;
+                folder.FolderName = name.substr(lastSlash);
+                EmplaceFileData(folder.Files, entry.path());
+                EmplaceFolderData(folder.SubFolders, entry.path());
+
+                folderData.emplace(std::pair<std::filesystem::path, FolderData>(entry.path(), folder));
+            }
+
+
+        }
+    }
+
+    void PossumLayer::EmplaceFileData(std::map<std::filesystem::path, FileData>& fileData, const std::filesystem::path& folderPath)
+    {
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath))
+        {
+            if (entry.is_regular_file())
+            {
+                FileData file;
+                std::string name = entry.path().string();
+                size_t lastSlash = name.find_last_of('/') + 1;
+                file.FileName = name.substr(lastSlash);
+
+                fileData.emplace(std::pair<std::filesystem::path, FileData>(entry.path(), file));
+            }
+
+
+        }
     }
 
     void PossumLayer::RenderSaveFileAs()

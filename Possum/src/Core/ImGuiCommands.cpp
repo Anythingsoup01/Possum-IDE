@@ -14,10 +14,9 @@ namespace Ferret::Possum
         {
             auto& editState = ImGui::GetCurrentContext()->InputTextState; 
             buf.resize(capacity * 2);
-            editState.ReloadUserBuf = true;
-            editState.ReloadSelectionStart = editState.ReloadSelectionEnd = editState.GetCursorPos();
+            editState.ReloadUserBufAndKeepPosition();
         }
-        return true;       
+        return true;
     }
 
     bool ImGuiCommands::InputTextMultiline(const char *label, CBuffer &buf, size_t buf_size, const ImVec2 &size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data)
@@ -32,8 +31,7 @@ namespace Ferret::Possum
         {
             auto& editState = ImGui::GetCurrentContext()->InputTextState; 
             buf.resize(capacity * 2);
-            editState.ReloadUserBuf = true;
-            editState.ReloadSelectionStart = editState.ReloadSelectionEnd = editState.GetCursorPos();
+            editState.ReloadUserBufAndKeepPosition();
         }
         return true;
     }
