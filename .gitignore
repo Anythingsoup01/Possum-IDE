@@ -1,7 +1,6 @@
 
 build
 prebuild
-prebuild.lua
 GenerateAndBuild.sh
 imgui.ini
 

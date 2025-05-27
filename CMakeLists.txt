@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-project(FerretAppTemplate LANGUAGES CXX)
+project(PossumIDE LANGUAGES CXX)
 add_subdirectory(vendor/ImGuiFileDialog)
-add_subdirectory(Possum)
 add_subdirectory(Ferret)
+add_subdirectory(Possum)
