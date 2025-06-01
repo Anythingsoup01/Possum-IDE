@@ -2,7 +2,7 @@
 
 namespace Ferret::Possum
 {
-    bool ImGuiCommands::InputText(const char *label, CBuffer &buf, size_t buf_size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data)
+    bool ImGuiCommands::InputText(const char *label, Buffer &buf, size_t buf_size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data)
     {
          if (!ImGui::InputText(label, buf.data(), buf_size, flags, callback, user_data))
             return false;
@@ -19,7 +19,7 @@ namespace Ferret::Possum
         return true;
     }
 
-    bool ImGuiCommands::InputTextMultiline(const char *label, CBuffer &buf, size_t buf_size, const ImVec2 &size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data)
+    bool ImGuiCommands::InputTextMultiline(const char *label, Buffer &buf, size_t buf_size, const ImVec2 &size, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* user_data)
     {
         if (!ImGui::InputTextMultiline(label, buf.data(), buf_size, size, flags, callback, user_data))
             return false;
