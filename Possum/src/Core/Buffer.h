@@ -5,14 +5,14 @@
 
 namespace Ferret::Possum
 {
-    struct CBuffer
+    struct Buffer
     {
     private:
         char* m_Data;
         size_t m_Capacity;
     public:
         // Defaults to one as initial capacity
-        CBuffer(size_t initialCapacity = 10)
+        Buffer(size_t initialCapacity = 10)
         {
             m_Data = (char*)malloc(initialCapacity);
             if (m_Data == nullptr)

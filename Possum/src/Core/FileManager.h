@@ -17,7 +17,7 @@ namespace Ferret::Possum
         bool IsUntitled = false;
         bool IsOpen = false;
     
-        CBuffer Buffer;
+        Buffer Buf;
 
         ImGuiTabItemFlags TabFlags = ImGuiTabItemFlags_None;
     };
@@ -25,6 +25,7 @@ namespace Ferret::Possum
     class FileManager
     {
     public:
+        FileManager();
         ~FileManager();
 
         void NewFile();
@@ -39,7 +40,10 @@ namespace Ferret::Possum
         bool Exists(const std::filesystem::path& key);
 
         std::unordered_map<std::filesystem::path, FileData>& GetFiles() { return m_Files; }
+
+        static FileManager& Get() { return *s_Instance; }
     private:
+        static FileManager* s_Instance;
         std::unordered_map<std::filesystem::path, FileData> m_Files;
 
         int m_UntitledDocuments = 0;

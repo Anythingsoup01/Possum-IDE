@@ -5,6 +5,8 @@
 
 namespace Ferret::Possum
 {
+    FileManager* FileManager::s_Instance = nullptr;
+    
     std::string ReadFStream(const std::ifstream& in)
     {
         std::stringstream ss;
@@ -12,6 +14,13 @@ namespace Ferret::Possum
         std::string str = ss.str();
         return str;
     }
+
+    FileManager::FileManager()
+    {
+        s_Instance = this;
+    }
+
+
 
     FileManager::~FileManager()
     {
@@ -21,7 +30,7 @@ namespace Ferret::Possum
             ss << "/tmp/possum/UntitledDocument" << i;
             std::remove(ss.str().c_str());
         }
-
+        s_Instance = nullptr;
     }
 
     void FileManager::NewFile()
@@ -46,7 +55,7 @@ namespace Ferret::Possum
         fileData.Title = fileName.str();
         fileData.IsUntitled = true;
         fileData.IsOpen = true;
-        fileData.Buffer.copy("\0\0\0\0\0\0\0\0\0\0");
+        fileData.Buf.copy("\0\0\0\0\0\0\0\0\0\0");
 
         InsertFileData(ss.str(), fileData);
 
@@ -71,7 +80,7 @@ namespace Ferret::Possum
         fileData.IsOpen = true;
         
         std::string inData = ReadFStream(in);
-        fileData.Buffer.copy(inData.data());
+        fileData.Buf.copy(inData.data());
 
         InsertFileData(filePath, fileData);
     }
@@ -84,6 +93,7 @@ namespace Ferret::Possum
             FE_CLI_ERROR("Saving file to {}", filePath.string());
         }
         out << outData;
+        out.close();
     }
 
     void FileManager::UpdateFileData(const std::filesystem::path& key, const std::string& title, const std::string& altTitle, const std::string& fileString, const std::filesystem::path& newKey)
@@ -97,7 +107,7 @@ namespace Ferret::Possum
         fileData.IsUntitled = false;
         fileData.IsOpen = true;
         fileData.TabFlags = ImGuiTabItemFlags_SetSelected;
-        fileData.Buffer.copy(fileString.c_str());
+        fileData.Buf.copy(fileString.c_str());
 
         InsertFileData(newKey, fileData);
     }
