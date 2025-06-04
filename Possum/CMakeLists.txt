@@ -1,10 +1,12 @@
 set(SRCS
     src/Core/FileManager.cpp
+    src/Core/FileInteraction.cpp
     src/Core/ProjectManager.cpp
     src/Core/ImGuiRenderer.cpp
     src/Core/ImGuiCommands.cpp
     src/Possum/PossumLayer.cpp
     src/Possum/PossumApp.cpp
+    src/Core/FileInteraction.h
     src/Core/Buffer.h
     src/Core/ImGuiRenderer.h
     src/Core/ProjectManager.h

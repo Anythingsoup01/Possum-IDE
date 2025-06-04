@@ -1,0 +1,6 @@
+Folders:
+    You are now able to open, edit & view entire folders. However, folders locked behind admin/another user won't work as of right now, I will be working to resolve this issue.
+
+Future Features:
+    The next major feature I am working on will be projects, as it currently stands, you can open a folder and use a terminal with your preferred build system. I won't be removing that capability for folders, but projects will have a custom build system made by me, in the coming months there will be a project-dev branch where I'll be working on this system.
+

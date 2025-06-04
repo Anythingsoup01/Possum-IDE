@@ -1,26 +1,16 @@
+#include "psmpch.h"
 #include "FileManager.h"
-#include <filesystem>
-#include <fstream>
 #include "Ferret/Core/Application.h"
+#include "FileInteraction.h"
 
 namespace Ferret::Possum
 {
     FileManager* FileManager::s_Instance = nullptr;
-    
-    std::string ReadFStream(const std::ifstream& in)
-    {
-        std::stringstream ss;
-        ss << in.rdbuf();
-        std::string str = ss.str();
-        return str;
-    }
 
     FileManager::FileManager()
     {
         s_Instance = this;
     }
-
-
 
     FileManager::~FileManager()
     {
@@ -79,21 +69,15 @@ namespace Ferret::Possum
         fileData.IsUntitled = false;
         fileData.IsOpen = true;
         
-        std::string inData = ReadFStream(in);
+        std::string inData = FileInteraction::ReadFile(filePath);
         fileData.Buf.copy(inData.data());
 
         InsertFileData(filePath, fileData);
     }
 
-    void FileManager::SaveFile(const std::filesystem::path& filePath, const char* outData)
+    void FileManager::SaveFile(const std::filesystem::path& filePath, const std::string& outData)
     {
-        std::ofstream out(filePath);
-        if (!out.is_open())
-        {
-            FE_CLI_ERROR("Saving file to {}", filePath.string());
-        }
-        out << outData;
-        out.close();
+        FileInteraction::WriteFile(filePath, outData);
     }
 
     void FileManager::UpdateFileData(const std::filesystem::path& key, const std::string& title, const std::string& altTitle, const std::string& fileString, const std::filesystem::path& newKey)

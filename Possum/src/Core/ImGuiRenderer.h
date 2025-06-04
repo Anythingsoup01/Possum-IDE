@@ -8,6 +8,7 @@ namespace Ferret::Possum
     class ImGuiRenderer
     {
     public:
+        ImGuiRenderer();
         void OnRender();
 
         enum class FileInteractionState
@@ -19,8 +20,9 @@ namespace Ferret::Possum
         };
 
         void SetFileInteractionState(const FileInteractionState interactionState) { m_FileInteractionState = interactionState; }
-    private:
+    private: 
         void RenderWorkspace();
+        void RenderDefaultWorkspaceTab();
         void RenderFileTree();
 
         void RenderFolderData(const std::map<std::filesystem::path, ProjectManager::FolderData>& folderData);
@@ -36,6 +38,8 @@ namespace Ferret::Possum
 
         Buffer m_FileNameBuffer;
         Buffer m_FileDirectoryBuffer;
+
+        Buffer m_PatchNotes;
         
     };
 }

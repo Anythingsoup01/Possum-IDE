@@ -30,7 +30,7 @@ namespace Ferret::Possum
 
         void NewFile();
         void OpenFile(const std::filesystem::path& filePath);
-        void SaveFile(const std::filesystem::path& filePath, const char* outData);
+        void SaveFile(const std::filesystem::path& filePath, const std::string& outData);
 
         void UpdateFileData(const std::filesystem::path& key, const std::string& title, const std::string& altTitle, const std::string& fileString, const std::filesystem::path& newKey);
         void InsertFileData(const std::filesystem::path& key, const FileData fileData);

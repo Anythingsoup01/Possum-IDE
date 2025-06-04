@@ -7,8 +7,17 @@
 #include "ImGuiCommands.h"
 #include "Possum/PossumLayer.h"
 
+#include "FileInteraction.h"
+
 namespace Ferret::Possum
 {
+
+    ImGuiRenderer::ImGuiRenderer()
+    {
+        std::string pn = FileInteraction::ReadFile("docs/release/patchnotes.txt");
+        m_PatchNotes.copy(pn.data());
+    }
+
     void ImGuiRenderer::OnRender()
     {
         switch (m_FileInteractionState)
@@ -58,9 +67,46 @@ namespace Ferret::Possum
                         ImGui::EndTabItem();
                     }
                 }
+                if (files.empty())
+                    RenderDefaultWorkspaceTab();
                 ImGui::EndTabBar();
             }
             ImGui::End();
+        }
+    }
+
+    void ImGuiRenderer::RenderDefaultWorkspaceTab()
+    {
+        ImVec2 size = { ImGui::GetContentRegionAvail().x / 4.0f, ImGui::GetContentRegionAvail().y };
+        if (ImGui::BeginTabItem("Welcome"))
+        {
+            ImGui::BeginChild("##BUTTONS", size);
+            {
+                if (ImGui::Button("New File", ImVec2(125, 25)))
+                {
+                    FileManager::Get().NewFile();
+                }
+                if (ImGui::Button("Open File", ImVec2(125, 25)))
+                {
+                    m_FileInteractionState = FileInteractionState::OPENFILE;
+                }
+                if (ImGui::Button("Open Folder", ImVec2(125, 25)))
+                {
+                    m_FileInteractionState = FileInteractionState::OPENFOLDER;
+                }
+                ImGui::EndChild();
+            }
+            ImGui::SameLine();
+            ImGui::BeginChild("##HOTFIXES", ImGui::GetContentRegionAvail(), ImGuiChildFlags_Border);
+            {   
+                ImGui::SetCursorPosX((ImGui::GetContentRegionAvail().x / 2) - 25);
+                ImGui::Text("Patch Notes");
+
+
+                ImGui::TextWrapped("%s", m_PatchNotes.data());
+                ImGui::EndChild();
+            }
+            ImGui::EndTabItem();
         }
     }
     
