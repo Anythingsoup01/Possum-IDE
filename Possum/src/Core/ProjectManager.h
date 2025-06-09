@@ -29,10 +29,10 @@ namespace Ferret::Possum
 
             const void reset()
             {
-                this->ProjectName = "";
-                this->ProjectPath = "";
-                this->Folders.clear();
-                this->Files.clear();
+                ProjectName = "";
+                ProjectPath = "";
+                Folders.clear();
+                Files.clear();
             }
         };
 
